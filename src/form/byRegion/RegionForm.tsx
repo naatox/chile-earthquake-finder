@@ -5,7 +5,8 @@ import Swal from "sweetalert2";
 
 import type { FormValues } from "../../types/formRegion";
 import { getRegionCoordinates } from "../../lib/utils";
-import { formatDate } from "../../lib/utils";
+import { formatDate, validateDateIsNotInFuture } from "../../lib/utils";
+
 
 import {
   Form,
@@ -82,13 +83,18 @@ export default function RegionForm() {
     
     const formattedDateMin: string = formatDate(dateMin);
     const formattedDateMax: string = formatDate(dateMax);
+    
+    const isValidDateMin = validateDateIsNotInFuture(dateMin);
+    const isValidDateMax = validateDateIsNotInFuture(dateMax);
 
+    if (!isValidDateMin || !isValidDateMax) {
+      return;
+    }
     setLoading(true);
     setError("");
 
     try {
       const res = await fetch(
-        // `http://localhost:8080/api/earthquake?lat=${lat}&lon=${lon}&start=${start}&end=${end}`
 
       `https://backend-qxo7.onrender.com/api/earthquake?latmin=${latMin}&latmax=${latMax}&lonmin=${lonMin}&lonmax=${lonMax}&datemin=${formattedDateMin}&datemax=${formattedDateMax}&page&limit`
       );

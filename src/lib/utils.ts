@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import Swal from "sweetalert2"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -42,4 +43,23 @@ export function getRegionCoordinates(region: string): Coordinates | null {
 export function formatDate(isoDate: string): string {
   const [year, month, day] = isoDate.split("-");
   return `${day}/${month}/${year}`;
+}
+
+
+export function validateDateIsNotInFuture(inputDate: Date | string): boolean {
+  const now = new Date();
+  const date = typeof inputDate === "string" ? new Date(inputDate) : inputDate;
+
+  if (date > now) {
+    Swal.fire({
+      icon: "error",
+      title: "Invalid Date",
+      text: "The date cannot be in the future.",
+      showConfirmButton: true,
+      confirmButtonColor: "black",
+    });
+    return false;
+  }
+
+  return true;
 }

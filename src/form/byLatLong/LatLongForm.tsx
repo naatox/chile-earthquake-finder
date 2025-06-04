@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { formatDate } from "../../lib/utils";
+import { formatDate, validateDateIsNotInFuture } from "../../lib/utils";
 
 import type { FormValues } from "../../types/formLatLong";
 
@@ -49,7 +49,14 @@ export default function LatLongForm() {
     const { latMin, latMax, lonMin, lonMax, dateMin,dateMax } = data;
     const formattedDateMin: string = formatDate(dateMin);
     const formattedDateMax: string = formatDate(dateMax);
+
+    const isValidDateMin = validateDateIsNotInFuture(dateMin);
+    const isValidDateMax = validateDateIsNotInFuture(dateMax);
     
+    if (!isValidDateMin || !isValidDateMax) {
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {

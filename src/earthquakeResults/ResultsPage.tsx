@@ -136,7 +136,7 @@ export default function ResultsPage() {
           </div>
         </>
       ) : (
-        <p className="text-gray-500 mt-4">No se encontraron resultados.</p>
+        <p className="text-gray-500 mt-4">No results</p>
       )}
     </div>
   );
