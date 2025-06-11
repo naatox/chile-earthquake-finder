@@ -99,6 +99,7 @@ export default function RegionForm() {
       `https://backend-qxo7.onrender.com/api/earthquake?latmin=${latMin}&latmax=${latMax}&lonmin=${lonMin}&lonmax=${lonMax}&datemin=${formattedDateMin}&datemax=${formattedDateMax}&page&limit`
       );
       const json = await res.json();
+      console.log(json);
 
       if (res.status === 400) {
         Swal.fire({

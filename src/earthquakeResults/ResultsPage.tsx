@@ -75,24 +75,24 @@ export default function ResultsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Magnitude (Mw)</TableHead>
-                <TableHead>Latitude</TableHead>
-                <TableHead>Longitude</TableHead>
-                <TableHead>Depth</TableHead>
+                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">Das Magnitude Scale (Mwg) </TableHead>
+                <TableHead className="text-center">Latitude</TableHead>
+                <TableHead className="text-center">Longitude</TableHead>
+                <TableHead className="text-center">Depth</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {currentResults.map((eq: any) => {
-                const { depth, magnitude, latitude, longitude, hour, minute, day, month, year } = eq;
+                const { depth, magnitude_mwg, latitude, longitude, hour, minute, day, month, year } = eq;
                 const date = `${hour}:${minute} ${day}/${month}/${year}`;
                 return (
                   <TableRow key={eq.id}>
-                    <TableCell>{date}</TableCell>
-                    <TableCell>{magnitude}</TableCell>
-                    <TableCell>{latitude}</TableCell>
-                    <TableCell>{longitude}</TableCell>
-                    <TableCell>{depth}</TableCell>
+                    <TableCell className="text-center">{date}</TableCell>
+                    <TableCell className="text-center">{magnitude_mwg} </TableCell>
+                    <TableCell className="text-center">{latitude}</TableCell>
+                    <TableCell className="text-center">{longitude}</TableCell>
+                    <TableCell className="text-center">{depth}</TableCell>
                   </TableRow>
                 );
               })}
