@@ -90,8 +90,8 @@ export default function ResultsPage() {
                   <TableRow key={eq.id}>
                     <TableCell className="text-center">{date}</TableCell>
                     <TableCell className="text-center">{magnitude_mwg} </TableCell>
-                    <TableCell className="text-center">{latitude}</TableCell>
-                    <TableCell className="text-center">{longitude}</TableCell>
+                    <TableCell className="text-center">-{latitude}</TableCell>
+                    <TableCell className="text-center">-{longitude}</TableCell>
                     <TableCell className="text-center">{depth}</TableCell>
                   </TableRow>
                 );
