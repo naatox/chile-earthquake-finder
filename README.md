@@ -1,4 +1,23 @@
-# Frontend
+
+# Chile Earthquake Finder 🌎
+Chile Earthquake Finder is a frontend-only React application that allows users to search, filter, and display recent earthquake data in Chile. The app fetches real-time seismic data from public APIs and offers advanced filtering options by region, coordinates, and date range.
+
+##🔎 Features
+- Frontend-only React app — no backend required.
+
+- Real-time earthquake data for Chile.
+
+Search earthquakes:
+
+- By region
+
+- By latitude and longitude
+
+- Filter by date range for each search mode.
+
+Clean, responsive, and user-friendly interface.
+
+Easy to extend and integrate into other projects.
 
 ### 1. Clona el repositorio
 
