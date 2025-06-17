@@ -89,6 +89,10 @@ export default function LatLongForm() {
       navigate("/results", {
         state: {
           results: json.results || [],
+           latMin,
+            latMax,
+            lonMin,
+            lonMax,
         },
       });
     } catch (err) {

@@ -123,6 +123,11 @@ export default function RegionForm() {
       navigate("/results", {
         state: {
           results: json.results || [],
+          latMin,
+          latMax,
+          lonMin,
+          lonMax,
+          region
         },
       });
     } catch (err) {
