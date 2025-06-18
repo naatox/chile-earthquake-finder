@@ -7,6 +7,9 @@ import type { FormValues } from "../../types/formRegion";
 import { getRegionCoordinates } from "../../lib/utils";
 import { formatDate, validateDateIsNotInFuture } from "../../lib/utils";
 
+import { DatePickerInput } from "@/components/ui/date-picker";
+
+
 
 import {
   Form,
@@ -23,7 +26,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -87,7 +90,9 @@ export default function RegionForm() {
     const isValidDateMin = validateDateIsNotInFuture(dateMin);
     const isValidDateMax = validateDateIsNotInFuture(dateMax);
 
+    console.log(dateMin, dateMax, formattedDateMin, formattedDateMax);
     if (!isValidDateMin || !isValidDateMax) {
+      
       return;
     }
     setLoading(true);
@@ -99,7 +104,7 @@ export default function RegionForm() {
       `https://backend-qxo7.onrender.com/api/earthquake?latmin=${latMin}&latmax=${latMax}&lonmin=${lonMin}&lonmax=${lonMax}&datemin=${formattedDateMin}&datemax=${formattedDateMax}&page&limit`
       );
       const json = await res.json();
-      console.log(json);
+      console.log();
 
       if (res.status === 400) {
         Swal.fire({
@@ -161,10 +166,7 @@ export default function RegionForm() {
         </CarouselItem>
       </CarouselContent>
 
-      {/* TODO: FIX CAROUSEL */}
       
-      {/* <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2 z-20 bg-white text-black p-2 rounded-full" />
-      <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2 z-20 bg-white text-black p-2 rounded-full" /> */}
     </Carousel>
 
 
@@ -208,7 +210,7 @@ export default function RegionForm() {
                   <FormItem>
                     <FormLabel>From</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                     <DatePickerInput value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -222,7 +224,7 @@ export default function RegionForm() {
                   <FormItem>
                     <FormLabel>To</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePickerInput value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
