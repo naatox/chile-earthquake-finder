@@ -11,20 +11,28 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import icon from "leaflet/dist/images/marker-icon.png";
-import iconShadow from "leaflet/dist/images/marker-shadow.png";
-
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 const RESULTS_PER_PAGE = 13;
 
-// Leaflet icon fix
-L.Icon.Default.mergeOptions({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-});
+// Custom icon loader based on magnitude
+const getMarkerIcon = (magnitude: number) => {
+  let iconUrl = "https://maps.google.com/mapfiles/ms/icons/green-dot.png";
+  if (magnitude >= 7.0) {
+    iconUrl = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
+  } else if (magnitude >= 5.0) {
+    iconUrl = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+  }
+
+  return L.icon({
+    iconUrl,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  });
+};
 
 function getPagination(current: number, total: number, delta = 1): (number | string)[] {
   const pages: (number | string)[] = [];
@@ -45,8 +53,8 @@ export default function ResultsPage() {
   const navigate = useNavigate();
 
   const { results = [], latMin, latMax, lonMin, lonMax, region } = location.state || {};
-
   const [currentPage, setCurrentPage] = useState(1);
+
   const totalPages = Math.ceil(results.length / RESULTS_PER_PAGE);
   const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
   const currentResults = results.slice(startIndex, startIndex + RESULTS_PER_PAGE);
@@ -59,12 +67,6 @@ export default function ResultsPage() {
   const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-  // Calcular centro del mapa si se pasan lat/lon
-  const mapCenter =
-    latMin && latMax && lonMin && lonMax
-      ? [-(parseFloat(latMin) + parseFloat(latMax)) / 2, -(parseFloat(lonMin) + parseFloat(lonMax)) / 2]
-      : [0, 0];
-
   if (!results || results.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-4">
@@ -74,14 +76,19 @@ export default function ResultsPage() {
     );
   }
 
-  return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Earthquake Results</h1>
 
-      <Button onClick={() => navigate("/")}>Go back</Button>
 
+ return (
+    <div className="max-w-5xl mx-auto p-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-2xl font-bold">Earthquake Results</h1>
+        <Button onClick={() => navigate("/")}>Go back</Button>
+      </div>
+
+      {/* Info de región */}
       {(latMin && latMax && lonMin && lonMax) && (
-        <div className="mt-4 p-4 bg-gray-200 border rounded text-sm text-black-700">
+        <div className="p-2 bg-gray-200 border rounded text-sm text-black-700 mb-2">
           {region ? (
             <span>
               <strong>Search area:</strong> Region of <span className="font-semibold">{region}</span>,
@@ -97,63 +104,83 @@ export default function ResultsPage() {
         </div>
       )}
 
-      <p className="text-sm text-gray-600 mt-2 mb-1">
+      {/* Subtítulo */}
+      <p className="text-sm text-gray-600 mb-2">
         Showing {startIndex + 1}–{Math.min(startIndex + RESULTS_PER_PAGE, results.length)} of {results.length} results
       </p>
 
-      <MapContainer
-        center={[latMin && latMax ? (latMin + latMax) / 2 : 0, lonMin && lonMax ? (lonMin + lonMax) / 2 : 0]} // Default center, will be adjusted if lat/lon bounds are provided
-        zoom={5}
-        style={{ height: "400px", width: "100%", marginBottom: "1rem" }}
-        scrollWheelZoom={true}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        />
-        {currentResults.map((eq: any) => {
-          const { latitude, longitude, magnitude_mwg, id } = eq;
-          return (
-            <Marker key={id} position={[-latitude, -longitude]}>
-              <Popup>
-                Magnitude: {magnitude_mwg}
-                <br />
-                Lat: {-latitude}, Lng: {-longitude}
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MapContainer>
+      {/* Contenido: Mapa + Tabla */}
+      <div className="flex flex-col md:flex-row gap-4 overflow-hidden max-h-[calc(100vh-250px)]">
+        {/* Mapa */}
+        <div className="w-full md:w-1/2 h-[400px] mt-10">
+          <MapContainer
+            center={[
+              latMin && latMax ? (latMin + latMax) / 2 : -20,
+              lonMin && lonMax ? (lonMin + lonMax) / 2 : -70,
+            ]}
+            zoom={6}
+            scrollWheelZoom={true}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            />
+            {currentResults.map((eq: any) => {
+              const { latitude, longitude, magnitude_mwg, id } = eq;
+              return (
+                <Marker
+                  key={id}
+                  position={[-latitude, -longitude]}
+                  icon={getMarkerIcon(magnitude_mwg)}
+                >
+                  <Popup>
+                    <div className="text-sm">
+                      <strong>Magnitude:</strong> {magnitude_mwg}<br />
+                      <strong>Lat:</strong> -{latitude}<br />
+                      <strong>Lng:</strong> -{longitude}
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
+        </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-center">Date</TableHead>
-            <TableHead className="text-center">Das Magnitude Scale (Mwg)</TableHead>
-            <TableHead className="text-center">Latitude</TableHead>
-            <TableHead className="text-center">Longitude</TableHead>
-            <TableHead className="text-center">Depth</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {currentResults.map((eq: any) => {
-            const { depth, magnitude_mwg, latitude, longitude, hour, minute, day, month, year } = eq;
-            const date = `${hour}:${minute} ${day}/${month}/${year}`;
-            return (
-              <TableRow key={eq.id}>
-                <TableCell className="text-center">{date}</TableCell>
-                <TableCell className="text-center">{magnitude_mwg}</TableCell>
-                <TableCell className="text-center">-{latitude}</TableCell>
-                <TableCell className="text-center">-{longitude}</TableCell>
-                <TableCell className="text-center">{depth}</TableCell>
+        {/* Tabla */}
+        <div className="w-full md:w-1/2">
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">Date</TableHead>
+                <TableHead className="text-center">Magnitude (Mwg)</TableHead>
+                <TableHead className="text-center">Latitude</TableHead>
+                <TableHead className="text-center">Longitude</TableHead>
+                <TableHead className="text-center">Depth</TableHead>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {currentResults.map((eq: any) => {
+                const { depth, magnitude_mwg, latitude, longitude, hour, minute, day, month, year } = eq;
+                const date = `${hour}:${minute} ${day}/${month}/${year}`;
+                return (
+                  <TableRow key={eq.id}>
+                    <TableCell className="text-center">{date}</TableCell>
+                    <TableCell className="text-center">{magnitude_mwg}</TableCell>
+                    <TableCell className="text-center">-{latitude}</TableCell>
+                    <TableCell className="text-center">-{longitude}</TableCell>
+                    <TableCell className="text-center">{depth}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
 
+      {/* Paginación */}
       <div className="flex flex-wrap justify-center items-center mt-4 gap-2">
-        <Button onClick={handlePrevious} disabled={currentPage === 1} aria-label="Previous page">
+        <Button onClick={handlePrevious} disabled={currentPage === 1}>
           <ChevronLeft className="w-4 h-4 mr-1" /> Previous
         </Button>
 
@@ -164,7 +191,6 @@ export default function ResultsPage() {
               variant={currentPage === item ? "default" : "outline"}
               className={currentPage === item ? "font-bold border border-primary" : ""}
               onClick={() => handlePageSelect(item)}
-              aria-label={`Page ${item}`}
             >
               {item}
             </Button>
@@ -175,7 +201,7 @@ export default function ResultsPage() {
           )
         )}
 
-        <Button onClick={handleNext} disabled={currentPage === totalPages} aria-label="Next page">
+        <Button onClick={handleNext} disabled={currentPage === totalPages}>
           Next <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
       </div>
