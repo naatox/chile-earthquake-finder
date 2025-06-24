@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { DatePickerInput } from "@/components/ui/date-picker";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,7 +87,7 @@ export default function LatLongForm() {
 
         return;
       }
-
+      const region = "No region selected";
       navigate("/results", {
         state: {
           results: json.results || [],
@@ -93,6 +95,7 @@ export default function LatLongForm() {
             latMax,
             lonMin,
             lonMax,
+            region
         },
       });
     } catch (err) {
@@ -126,15 +129,12 @@ export default function LatLongForm() {
           </CarouselItem>
       </CarouselContent>
 
-      {/* TODO: FIX CAROUSEL */}
-      
-      {/* <CarouselPrevious className="absolute top-1/2 left-4 -translate-y-1/2 z-20 bg-white text-black p-2 rounded-full" />
-      <CarouselNext className="absolute top-1/2 right-4 -translate-y-1/2 z-20 bg-white text-black p-2 rounded-full" /> */}
+   
     </Carousel>
 
 
       {/* Formulario sobre el fondo */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 ">
         <div className="w-full max-w-xl bg-white/80 backdrop-blur-md p-6 rounded-lg shadow-xl space-y-6">
           <h1 className="text-2xl font-bold text-center">Chile Earthquake Finder</h1>
 
@@ -206,7 +206,7 @@ export default function LatLongForm() {
                   <FormItem>
                     <FormLabel>From</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePickerInput value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -220,7 +220,7 @@ export default function LatLongForm() {
                   <FormItem>
                     <FormLabel>To</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePickerInput value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

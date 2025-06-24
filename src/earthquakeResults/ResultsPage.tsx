@@ -52,7 +52,7 @@ export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { results = [], latMin, latMax, lonMin, lonMax, region } = location.state || {};
+  var { results = [], latMin, latMax, lonMin, lonMax, region } = location.state || {};
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(results.length / RESULTS_PER_PAGE);
@@ -75,6 +75,11 @@ export default function ResultsPage() {
       </div>
     );
   }
+  latMax = parseFloat(latMax)
+  latMin = parseFloat(latMin);
+  lonMax = parseFloat(lonMax);
+  lonMin = parseFloat(lonMin);
+  
 
 
 
