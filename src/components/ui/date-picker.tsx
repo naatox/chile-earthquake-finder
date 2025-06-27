@@ -25,7 +25,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
       {label && <label className="px-1 text-sm font-medium ">{label}</label>}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-between font-normal">
+          <Button variant="outline" className="text-gray-500 w-full justify-between font-normal bg-white/80 backdrop-blur-md" >
             {date ? date.toLocaleDateString() : placeholder}
             <ChevronDownIcon />
           </Button>

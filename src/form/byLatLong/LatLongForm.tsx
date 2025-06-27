@@ -149,7 +149,7 @@ export default function LatLongForm() {
                         <FormItem>
                         <FormLabel>Latitude Min</FormLabel>
                         <FormControl>
-                            <Input type="number" step="any" placeholder="Ej. -56" {...field} />
+                            <Input className="bg-white/70 backdrop-blur border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" type="number" step="any" placeholder="Ej. -56" {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -163,7 +163,7 @@ export default function LatLongForm() {
                         <FormItem>
                         <FormLabel>Latitude Max</FormLabel>
                         <FormControl>
-                            <Input type="number" step="any" placeholder="Ej. -17" {...field} />
+                            <Input className="bg-white/70 backdrop-blur border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" type="number" step="any" placeholder="Ej. -17" {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -177,7 +177,7 @@ export default function LatLongForm() {
                         <FormItem>
                         <FormLabel>Longitude Min</FormLabel>
                         <FormControl>
-                            <Input type="number" step="any" placeholder="Ej. -76" {...field} />
+                            <Input className="bg-white/70 backdrop-blur border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" type="number" step="any" placeholder="Ej. -76" {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -191,7 +191,7 @@ export default function LatLongForm() {
                         <FormItem>
                         <FormLabel>Longitude Max</FormLabel>
                         <FormControl>
-                            <Input type="number" step="any" placeholder="Ej. -66" {...field} />
+                            <Input className="bg-white/70 backdrop-blur border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black" type="number" step="any" placeholder="Ej. -66" {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>

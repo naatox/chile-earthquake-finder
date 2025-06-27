@@ -185,9 +185,10 @@ export default function RegionForm() {
                     <FormLabel>Region</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a Region" />
+                        <SelectTrigger className="bg-white/70 backdrop-blur border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black">
+                          <SelectValue placeholder="Select a Region" className="text-black" />
                         </SelectTrigger>
+
                         <SelectContent>
                           {regionesDeChile.map((region) => (
                             <SelectItem key={region} value={region}>
