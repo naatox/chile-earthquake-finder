@@ -52,12 +52,29 @@ export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  var { results = [], latMin, latMax, lonMin, lonMax, region } = location.state || {};
-  const [currentPage, setCurrentPage] = useState(1);
+  let { results = [], latMin, latMax, lonMin, lonMax, region } = location.state || {};
 
-  const totalPages = Math.ceil(results.length / RESULTS_PER_PAGE);
+  // Filter out invalid results
+  const validResults = results.filter(
+    (eq: any) => eq.day !== undefined && eq.month !== undefined
+  );
+
+  if (!validResults || validResults.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">No Valid Results Found</h1>
+        <p className="text-sm text-gray-600 mb-4">
+          Some earthquake records had missing date information.
+        </p>
+        <Button onClick={() => navigate("/")}>Go back</Button>
+      </div>
+    );
+  }
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(validResults.length / RESULTS_PER_PAGE);
   const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
-  const currentResults = results.slice(startIndex, startIndex + RESULTS_PER_PAGE);
+  const currentResults = validResults.slice(startIndex, startIndex + RESULTS_PER_PAGE);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -67,23 +84,12 @@ export default function ResultsPage() {
   const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-  if (!results || results.length === 0) {
-    return (
-      <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">No Results Found</h1>
-        <Button onClick={() => navigate("/")}>Go back</Button>
-      </div>
-    );
-  }
-  latMax = parseFloat(latMax)
+  latMax = parseFloat(latMax);
   latMin = parseFloat(latMin);
   lonMax = parseFloat(lonMax);
   lonMin = parseFloat(lonMin);
-  
 
-
-
- return (
+  return (
     <div className="max-w-5xl mx-auto p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
@@ -111,7 +117,7 @@ export default function ResultsPage() {
 
       {/* Subtítulo */}
       <p className="text-sm text-gray-600 mb-2">
-        Showing {startIndex + 1}–{Math.min(startIndex + RESULTS_PER_PAGE, results.length)} of {results.length} results
+        Showing {startIndex + 1}–{Math.min(startIndex + RESULTS_PER_PAGE, validResults.length)} of {validResults.length} results
       </p>
 
       {/* Contenido: Mapa + Tabla */}
@@ -168,6 +174,7 @@ export default function ResultsPage() {
               {currentResults.map((eq: any) => {
                 const { depth, magnitude_mwg, latitude, longitude, hour, minute, day, month, year } = eq;
                 const date = `${hour}:${minute} ${day}/${month}/${year}`;
+
                 return (
                   <TableRow key={eq.id}>
                     <TableCell className="text-center">{date}</TableCell>
